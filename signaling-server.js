@@ -1,27 +1,27 @@
-const express = require("express");
-const WebSocket = require("ws");
-const http = require("http");
-const { v4: uuidv4 } = require('uuid');
-const app = express();
+const express = require("express"); // Importer le module express
+const WebSocket = require("ws"); // Importer le module ws pour WebSocket
+const http = require("http"); // Importer le module http
+const { v4: uuidv4 } = require('uuid'); // Importer le module uuid et renommer v4 en uuidv4
+const app = express(); // Créer une application express
 
-const port = process.env.PORT || 9000;
+const port = process.env.PORT || 9000; // Définir le port sur 9000 ou utiliser celui défini dans les variables d'environnement
 
-//initialize a http server
+// Initialiser un serveur HTTP
 const server = http.createServer(app);
 
-//initialize the WebSocket server instance
+// Initialiser une instance de serveur WebSocket
 const wss = new WebSocket.Server({ server });
 
-// create an object to store users and rooms
+// Créer des objets pour stocker les utilisateurs et les salles
 let users = {};
 let rooms = {};
 
-// utility to send message to one user
+// Fonction utilitaire pour envoyer un message à un utilisateur
 const sendTo = (connection, message) => {
   connection.send(JSON.stringify(message));
 };
 
-// utility to send message to all users in a room
+// Fonction utilitaire pour envoyer un message à tous les utilisateurs d'une salle
 const sendToRoom = (roomName, message) => {
   const room = rooms[roomName];
   if (room) {
@@ -34,30 +34,30 @@ const sendToRoom = (roomName, message) => {
   }
 };
 
+// Lorsque le serveur WebSocket reçoit une nouvelle connexion
 wss.on("connection", ws => {
-  // Log when a client connects
-  console.log("Client connected");
+  console.log("Client connecté"); // Log quand un client se connecte
 
   ws.on("message", msg => {
     let data;
-    //accepting only JSON messages
+    // Accepter uniquement les messages JSON
     try {
       data = JSON.parse(msg);
     } catch (e) {
-      console.log("Invalid JSON");
+      console.log("JSON invalide");
       data = {};
     }
     const { type, name, offer, answer, candidate, room, message } = data;
-    //Handle message by type
+    // Gérer le message selon son type
     switch (type) {
-      //when a user tries to login
+      // Quand un utilisateur tente de se connecter
       case "login":
-        //Check if username is available
+        // Vérifier si le nom d'utilisateur est disponible
         if (users[name]) {
           sendTo(ws, {
             type: "login",
             success: false,
-            message: "Username is unavailable"
+            message: "Nom d'utilisateur indisponible"
           });
         } else {
           const id = uuidv4();
@@ -69,7 +69,7 @@ wss.on("connection", ws => {
           ws.id = id;
           ws.room = room;
 
-          // Add user to room
+          // Ajouter l'utilisateur à la salle
           if (!rooms[room]) {
             rooms[room] = [];
           }
@@ -86,9 +86,9 @@ wss.on("connection", ws => {
           });
         }
         break;
-      //when a user sends an offer to connect with another user
+      // Quand un utilisateur envoie une offre pour se connecter avec un autre utilisateur
       case "offer":
-        //Check if user to send offer to exists
+        // Vérifier si l'utilisateur destinataire existe
         const offerRecipient = users[name];
         if (!!offerRecipient) {
           sendTo(offerRecipient, {
@@ -99,13 +99,13 @@ wss.on("connection", ws => {
         } else {
           sendTo(ws, {
             type: "error",
-            message: `User ${name} does not exist!`
+            message: `L'utilisateur ${name} n'existe pas !`
           });
         }
         break;
-      //when a user sends an answer to an offer
+      // Quand un utilisateur envoie une réponse à une offre
       case "answer":
-        //Check if user to send answer to exists
+        // Vérifier si l'utilisateur destinataire existe
         const answerRecipient = users[name];
         if (!!answerRecipient) {
           sendTo(answerRecipient, {
@@ -115,13 +115,13 @@ wss.on("connection", ws => {
         } else {
           sendTo(ws, {
             type: "error",
-            message: `User ${name} does not exist!`
+            message: `L'utilisateur ${name} n'existe pas !`
           });
         }
         break;
-      //when a user sends a candidate
+      // Quand un utilisateur envoie un candidat
       case "candidate":
-        //Check if user to send candidate to exists
+        // Vérifier si l'utilisateur destinataire existe
         const candidateRecipient = users[name];
         if (!!candidateRecipient) {
           sendTo(candidateRecipient, {
@@ -131,25 +131,25 @@ wss.on("connection", ws => {
         } else {
           sendTo(ws, {
             type: "error",
-            message: `User ${name} does not exist!`
+            message: `L'utilisateur ${name} n'existe pas !`
           });
         }
         break;
-      //when a user sends a message
+      // Quand un utilisateur envoie un message
       case "message":
         sendToRoom(ws.room, {
           type: "message",
           message
         });
         break;
-      //when a user leaves
+      // Quand un utilisateur quitte
       case "leave":
-        // Notify all users that this user has left
+        // Notifier tous les utilisateurs que cet utilisateur a quitté
         sendToRoom(ws.room, "leave", { id: ws.id, name: ws.name });
-        // Remove the user from the list
+        // Supprimer l'utilisateur de la liste
         delete users[ws.name];
 
-        // Remove the user from the room
+        // Supprimer l'utilisateur de la salle
         rooms[ws.room] = rooms[ws.room].filter(userName => userName !== ws.name);
         if (rooms[ws.room].length === 0) {
           delete rooms[ws.room];
@@ -158,18 +158,17 @@ wss.on("connection", ws => {
       default:
         sendTo(ws, {
           type: "error",
-          message: "Command not found: " + type
+          message: "Commande non trouvée : " + type
         });
         break;
     }
   });
 
-  // Handle client disconnection
+  // Gérer la déconnexion du client
   ws.on("close", () => {
-    // Log when a client disconnects
-    console.log("Client disconnected");
+    console.log("Client déconnecté"); // Log quand un client se déconnecte
 
-    // Notify all users that this user has left
+    // Notifier tous les utilisateurs que cet utilisateur a quitté
     if (ws.name) {
       sendToRoom(ws.room, {
         type: "leave",
@@ -177,10 +176,10 @@ wss.on("connection", ws => {
         name: ws.name
       });
 
-      // Remove the user from the users object
+      // Supprimer l'utilisateur de l'objet users
       delete users[ws.name];
 
-      // Remove the user from the room
+      // Supprimer l'utilisateur de la salle
       if (rooms[ws.room]) {
         rooms[ws.room] = rooms[ws.room].filter(userName => userName !== ws.name);
         if (rooms[ws.room].length === 0) {
@@ -190,16 +189,17 @@ wss.on("connection", ws => {
     }
   });
 
-  //send immediate a feedback to the incoming connection
+  // Envoyer immédiatement un message de feedback à la connexion entrante
   ws.send(
     JSON.stringify({
       type: "connect",
-      message: "Well hello there, I am a WebSocket server"
+      message: "Bonjour, je suis un serveur WebSocket"
     })
   );
 });
 
-//start our server
+// Démarrer notre serveur
 server.listen(port, () => {
-  console.log(`Signaling Server running on port: ${port}`);
+  console.log(`Serveur de signalisation fonctionnant sur le port : ${port}`);
 });
+
