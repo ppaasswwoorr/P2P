@@ -19,6 +19,8 @@ Ce projet est une application de chat en temps réel utilisant une architecture 
 - **Langage**: JavaScript
 - **Framework**: Node.js
 - **Bibliothèque WebSocket**: ws
+- **Fichiers Clés**:
+  - `signaling-server.js`: met en place un serveur WebSocket pour gérer la signalisation des connexions peer-to-peer entre utilisateurs en ligne.
 - **Responsabilités Clées**:
   - Maintenir une liste des clients connectés.
   - Informer les clients des nouvelles connexions.
@@ -26,7 +28,7 @@ Ce projet est une application de chat en temps réel utilisant une architecture 
   - Échanger des candidats ICE.
   - Informer les utilisateurs lorsqu'un client se déconnecte.
 
-## Structure du Code
+## Structure du Code :
 
 ```
 TrustTalk
@@ -46,18 +48,18 @@ TrustTalk
 └── package.json
 ```
 
-## Organisation du Code Source
+## Organisation du Code Source :
 - `src`: Contient tous les composants front-end React.
 - `signaling-server`: Contient le serveur de signalisation WebSocket Node.js.
 - `public`: Fichiers statiques pour l'application React.
 - `README.md`: Documentation du projet.
 - `package.json`: Dépendances du projet et scripts.
 
-## Synchronisation avec Git
+## Synchronisation avec Git :
 - Commits réguliers avec des messages significatifs.
 - Stratégie de branches pour le développement de fonctionnalités, les corrections de bugs et les versions.
 
-## Sécurité
+## Sécurité :
 ### Back-end
 - Validation des Entrées: Toutes les entrées sont désinfectées pour éviter les attaques par injection.
 - Sécurité WebSocket: Gestion des connexions WebSocket de manière sécurisée pour éviter les accès non autorisés et les violations de données.
@@ -69,16 +71,16 @@ TrustTalk
   - Mise en œuvre des mécanismes d'authentification et d'autorisation des utilisateurs.
   - Utilisation des méthodes sécurisées pour la connexion des utilisateurs et la gestion des sessions.
 
-## Compatibilité Multiplateforme
+## Compatibilité Multiplateforme :
 L'application est conçue pour être compatible avec différents navigateurs Web et appareils:
 - Navigateurs: Chrome, Firefox, Safari, Edge
 - Appareils: Ordinateurs de bureau, tablettes, smartphones
 
-## Conception Responsive
+## Conception Responsive :
 Utilisation du Semantic UI React pour des composants d'interface utilisateur réactifs et adaptatifs.
 Testé pour la compatibilité sur différents tailles et résolutions d'écran.
 
-## Test de Compatibilité
+## Test de Compatibilité :
 - Tests réguliers sur différents navigateurs et appareils.
 - Utilisation d'outils comme BrowserStack pour les tests multi-navigateurs.
 
