@@ -56,6 +56,7 @@ TrustTalk
 - `package.json`: Dépendances du projet et scripts.
 
 ## Synchronisation avec Git :
+- Utilisation du `git clone <repository-url>` pour cloner le dépôt.
 - Commits réguliers avec des messages significatifs.
 - Stratégie de branches pour le développement de fonctionnalités, les corrections de bugs et les versions.
 
