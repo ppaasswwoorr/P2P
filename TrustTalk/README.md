@@ -19,6 +19,8 @@ Ce projet est une application de chat en temps réel utilisant une architecture 
 - **Langage**: JavaScript
 - **Framework**: Node.js
 - **Bibliothèque WebSocket**: ws
+- **Fichiers Clés**:
+  - `signaling-server.js`: met en place un serveur WebSocket pour gérer la signalisation des connexions peer-to-peer entre utilisateurs en ligne.
 - **Responsabilités Clées**:
   - Maintenir une liste des clients connectés.
   - Informer les clients des nouvelles connexions.
