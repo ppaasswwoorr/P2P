@@ -44,7 +44,6 @@ TrustTalk
 │   ├── UsersList.js
 ├── signaling-server.js
 ├── .gitignore
-├── README.md
 └── package.json
 ```
 
