@@ -1,6 +1,11 @@
-import React from "react"; // Import de React
-import Chat from "./Chat"; // Import du composant Chat depuis un fichier local
-import { ConnectionConsumer, ChannelConsumer } from "./App"; // Import des consommateurs de contextes depuis App
+// Importer le module React
+import React from "react";
+
+// Importer le composant Chat depuis un fichier local
+import Chat from "./Chat";
+
+// Importer les consommateurs de contextes depuis App
+import { ConnectionConsumer, ChannelConsumer } from "./App";
 
 // Définition du composant fonctionnel Container
 const Container = () => {
@@ -13,10 +18,14 @@ const Container = () => {
           {({ channel, updateChannel }) => (
             // Rendu du composant Chat avec les valeurs et fonctions de mise à jour des contextes
             <Chat
-              connection={connection} // Passage de la connexion au composant Chat
-              updateConnection={updateConnection} // Passage de la fonction de mise à jour de la connexion
-              channel={channel} // Passage du canal au composant Chat
-              updateChannel={updateChannel} // Passage de la fonction de mise à jour du canal
+              // Passage de la connexion actuelle au composant Chat
+              connection={connection}
+              // Passage de la fonction de mise à jour de la connexion au composant Chat
+              updateConnection={updateConnection}
+              // Passage du canal actuel au composant Chat
+              channel={channel}
+              // Passage de la fonction de mise à jour du canal au composant Chat
+              updateChannel={updateChannel}
             />
           )}
         </ChannelConsumer>
@@ -25,4 +34,5 @@ const Container = () => {
   );
 };
 
-export default Container; // Export du composant Container comme composant par défaut
+// Exporter le composant Container comme composant par défaut
+export default Container;
